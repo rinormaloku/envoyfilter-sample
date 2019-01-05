@@ -1,0 +1,28 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: echo
+  labels:
+    app: echo
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: echo
+    spec:
+      containers:
+      - name: echo
+        image: solsson/http-echo
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name:  echo
+spec:
+  selector:
+    app: echo
+  ports:
+  - name:  http
+    port:  8080
+    targetPort:  80

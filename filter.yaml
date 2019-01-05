@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: echo-filter
+  namespace: default
+spec:
+  workloadLabels:
+    app: echo
+  filters:
+  - listenerMatch:
+      portNumber: 8080
+      listenerProtocol: HTTP
+      listenerType: ANY
+    # insertPosition:
+    #   index: FIRST
+    filterName: envoy.lua
+    filterType: HTTP
+    filterConfig:
+      inlineCode: |
+        function envoy_on_request(request_handle)
+          request_handle:logInfo("Hello World")
+          request_handle:headers():replace(":path", "/echo/now")
+        end
+        function envoy_on_response(response_handle)
+          request_handle:logInfo("Hello World");
+        end

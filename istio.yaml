@@ -1,0 +1,43 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: sa-external-echo
+spec:
+  hosts:
+  - "www.echo.com"
+  gateways:
+  - http-gateway                      # 1
+  http:
+  - match:
+    - uri:
+        regex: '^.*\.(ico|png|jpg|css)$'
+    route:
+    - destination:
+        host: echo
+        port:
+          number: 8080
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: echo
+        port:
+          number: 8080
+    # fault:
+    #   delay:
+    #     fixedDelay: 7.000s
+    #     percent: 100
+---
+
+# apiVersion: networking.istio.io/v1alpha3
+# kind: VirtualService
+# metadata:
+#   name: echo
+# spec:
+#   hosts:
+#     - echo
+#   http:
+#   - route: 
+#     - destination: 
+#         host: echo
